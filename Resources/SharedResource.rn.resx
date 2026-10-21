@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Dashboard" xml:space="preserve"><value>Ikibaho</value></data>
+  <data name="Agences" xml:space="preserve"><value>Amashami</value></data>
+  <data name="Clients" xml:space="preserve"><value>Abakiriya</value></data>
+  <data name="Comptes" xml:space="preserve"><value>Konti</value></data>
+  <data name="Operations" xml:space="preserve"><value>Ibikorwa</value></data>
+  <data name="Depot" xml:space="preserve"><value>Kwiyongereza</value></data>
+  <data name="Retrait" xml:space="preserve"><value>Kuvana</value></data>
+  <data name="Virement" xml:space="preserve"><value>Kohereza</value></data>
+  <data name="Journal" xml:space="preserve"><value>Igitabo</value></data>
+  <data name="AML" xml:space="preserve"><value>AML</value></data>
+  <data name="Audit" xml:space="preserve"><value>Igenzura</value></data>
+  <data name="Utilisateurs" xml:space="preserve"><value>Abakoresha</value></data>
+  <data name="MesComptes" xml:space="preserve"><value>Konti zanje</value></data>
+  <data name="Logout" xml:space="preserve"><value>Sohoka</value></data>
+  <data name="Language" xml:space="preserve"><value>Ururimi</value></data>
+  <data name="SecureArea" xml:space="preserve"><value>Ahantu hakingiwe</value></data>
+  <data name="BankManagement" xml:space="preserve"><value>Gucunga banki</value></data>
+</root>

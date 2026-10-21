@@ -1,0 +1,60 @@
+@model AkarangaBank.Web.ViewModels.ClientListVM
+@{ ViewData["Title"] = "Clients"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>👥 Clients</h2>
+    <a asp-action="Create" class="btn btn-success">+ Nouveau client</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="recherche" value="@Model.Recherche" class="form-control" placeholder="Nom, numéro, CNI..." />
+    </div>
+    <div class="col-md-3">
+        <select name="agenceId" class="form-select">
+            <option value="">-- Toutes les agences --</option>
+            @foreach (var a in Model.Agences)
+            {
+                <option value="@a.Id" selected="@(Model.AgenceId == a.Id)">@a.Code - @a.Ville</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="statut" class="form-select">
+            <option value="">-- Statut --</option>
+            <option value="Actif" selected="@(Model.Statut == "Actif")">Actif</option>
+            <option value="Suspendu" selected="@(Model.Statut == "Suspendu")">Suspendu</option>
+            <option value="Cloture" selected="@(Model.Statut == "Cloture")">Clôturé</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+<p class="text-muted">@Model.Total client(s).</p>
+
+<table class="table table-hover bg-white">
+    <thead class="table-light">
+        <tr><th>N°</th><th>Nom</th><th>Prénom</th><th>CNI</th><th>Agence</th><th>Statut</th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model.Clients)
+    {
+        <tr>
+            <td>@c.NumeroClient</td>
+            <td>@c.Nom</td>
+            <td>@c.Prenom</td>
+            <td>@c.NumeroCNI</td>
+            <td>@c.Agence.Code</td>
+            <td>
+                <span class="badge @(c.Statut == "Actif" ? "bg-success" : c.Statut == "Suspendu" ? "bg-warning text-dark" : "bg-secondary")">@c.Statut</span>
+            </td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Détails</a>
+                <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-warning">Modifier</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

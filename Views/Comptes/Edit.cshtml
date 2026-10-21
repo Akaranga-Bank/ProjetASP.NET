@@ -1,0 +1,45 @@
+@model AkarangaBank.Web.ViewModels.CompteFormVM
+@{ ViewData["Title"] = "Modifier compte"; }
+
+<h2>Modifier le compte</h2>
+<p class="text-muted">Client : <strong>@Model.ClientNom</strong> — Solde : <strong>@Model.Solde.ToString("N0") @Model.Devise</strong></p>
+
+<form asp-action="Edit" method="post" class="bg-white p-4 rounded shadow-sm">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ClientId" />
+    <input type="hidden" asp-for="Solde" />
+    <input type="hidden" asp-for="Devise" />
+    <input type="hidden" asp-for="ClientNom" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="NumeroCompte" class="form-label"></label>
+            <input asp-for="NumeroCompte" class="form-control" />
+            <span asp-validation-for="NumeroCompte" class="text-danger small"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="TypeCompteId" class="form-label"></label>
+            <select asp-for="TypeCompteId" asp-items="ViewBag.Types" class="form-select"></select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="AgenceId" class="form-label"></label>
+            <select asp-for="AgenceId" asp-items="ViewBag.Agences" class="form-select"></select>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Statut" class="form-label"></label>
+        <select asp-for="Statut" class="form-select">
+            <option value="Actif">Actif</option>
+            <option value="Bloque">Bloqué</option>
+            <option value="Cloture">Clôturé</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Modifier</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

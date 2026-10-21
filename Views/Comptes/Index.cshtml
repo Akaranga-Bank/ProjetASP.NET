@@ -1,0 +1,72 @@
+@model AkarangaBank.Web.ViewModels.CompteListVM
+@{ ViewData["Title"] = "Comptes"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>💳 Comptes bancaires</h2>
+    <a asp-action="Create" class="btn btn-success">+ Ouvrir un compte</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="recherche" value="@Model.Recherche" class="form-control" placeholder="Numéro ou client..." />
+    </div>
+    <div class="col-md-2">
+        <select name="agenceId" class="form-select">
+            <option value="">-- Agence --</option>
+            @foreach (var a in Model.Agences)
+            {
+                <option value="@a.Id" selected="@(Model.AgenceId == a.Id)">@a.Code</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="typeId" class="form-select">
+            <option value="">-- Type --</option>
+            @foreach (var t in Model.Types)
+            {
+                <option value="@t.Id" selected="@(Model.TypeCompteId == t.Id)">@t.Libelle</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="statut" class="form-select">
+            <option value="">-- Statut --</option>
+            <option value="Actif" selected="@(Model.Statut == "Actif")">Actif</option>
+            <option value="Bloque" selected="@(Model.Statut == "Bloque")">Bloqué</option>
+            <option value="Cloture" selected="@(Model.Statut == "Cloture")">Clôturé</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+<p class="text-muted">@Model.Total compte(s).</p>
+
+<table class="table table-hover bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>Numéro</th><th>Client</th><th>Type</th><th>Agence</th>
+            <th class="text-end">Solde</th><th>Statut</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model.Comptes)
+    {
+        <tr>
+            <td><strong>@c.NumeroCompte</strong></td>
+            <td>@c.Client.Nom @c.Client.Prenom</td>
+            <td>@c.TypeCompte.Libelle</td>
+            <td>@c.Agence.Code</td>
+            <td class="text-end">@c.Solde.ToString("N0") @c.Devise</td>
+            <td>
+                <span class="badge @(c.Statut == "Actif" ? "bg-success" : c.Statut == "Bloque" ? "bg-warning text-dark" : "bg-secondary")">@c.Statut</span>
+            </td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Détails</a>
+                <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-warning">Modifier</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

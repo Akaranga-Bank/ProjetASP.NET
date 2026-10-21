@@ -1,0 +1,82 @@
+@model AkarangaBank.Web.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Connexion";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion - Akaranga Bank</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #1F3864 0%, #2a4a7c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 420px;
+        }
+        .brand { color: #1F3864; font-weight: 700; font-size: 1.8rem; }
+        .brand-accent { color: #C9A227; }
+        .btn-login {
+            background: #1F3864;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            font-weight: 600;
+        }
+        .btn-login:hover { background: #2a4a7c; color: white; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <div class="brand">Akaranga<span class="brand-accent">Bank</span></div>
+            <p class="text-muted mb-0">Espace sécurisé</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autofocus />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">Se souvenir de moi</label>
+            </div>
+
+            <button type="submit" class="btn btn-login w-100">Se connecter</button>
+        </form>
+
+        <div class="mt-4 text-muted small">
+            <strong>Comptes de test :</strong><br />
+            admin@akaranga.bi / Admin@2025<br />
+            guichetier@akaranga.bi / Guichet@2025<br />
+            gestionnaire@akaranga.bi / Gestion@2025<br />
+            auditeur@akaranga.bi / Audit@2025
+        </div>
+    </div>
+</body>
+</html>

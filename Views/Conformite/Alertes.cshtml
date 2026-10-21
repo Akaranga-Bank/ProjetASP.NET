@@ -1,0 +1,86 @@
+@model IEnumerable<AkarangaBank.Web.Models.AlerteAML>
+@{ ViewData["Title"] = "Alertes AML"; }
+
+<h2>🚨 Alertes AML</h2>
+
+<p class="text-muted small">
+    DEBUG — Role admin : <strong>@User.IsInRole("admin")</strong> | Role gestionnaire : <strong>@User.IsInRole("gestionnaire")</strong>
+</p>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <select name="statut" class="form-select">
+            <option value="">-- Statut --</option>
+            <option value="Ouverte" selected="@(ViewBag.Statut == "Ouverte")">Ouverte</option>
+            <option value="EnCours" selected="@(ViewBag.Statut == "EnCours")">En cours</option>
+            <option value="Traitee" selected="@(ViewBag.Statut == "Traitee")">Traitée</option>
+            <option value="Classee" selected="@(ViewBag.Statut == "Classee")">Classée</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="niveau" class="form-select">
+            <option value="">-- Niveau --</option>
+            <option value="Faible" selected="@(ViewBag.Niveau == "Faible")">Faible</option>
+            <option value="Moyen" selected="@(ViewBag.Niveau == "Moyen")">Moyen</option>
+            <option value="Eleve" selected="@(ViewBag.Niveau == "Eleve")">Élevé</option>
+            <option value="Critique" selected="@(ViewBag.Niveau == "Critique")">Critique</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Aucune alerte.</p>
+}
+else
+{
+    <table class="table table-sm bg-white">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th><th>Client</th><th>Type</th><th>Niveau</th>
+                <th>Statut</th><th>Opération</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.DateAlerte.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@a.Client.Nom @a.Client.Prenom</td>
+                <td>@a.TypeAlerte</td>
+                <td>
+                    <span class="badge @(a.Niveau == "Critique" ? "bg-danger" : a.Niveau == "Eleve" ? "bg-warning text-dark" : "bg-info text-dark")">
+                        @a.Niveau
+                    </span>
+                </td>
+                <td>@a.Statut</td>
+                <td>@(a.Operation?.Reference ?? "-")</td>
+                <td>
+                    @if (User.IsInRole("admin") || User.IsInRole("gestionnaire"))
+                    {
+                        <form asp-action="Traiter" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@a.Id" />
+                            <input type="hidden" name="statut" value="Traitee" />
+                            <button class="btn btn-sm btn-success">Traiter</button>
+                        </form>
+                        <form asp-action="Traiter" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@a.Id" />
+                            <input type="hidden" name="statut" value="Classee" />
+                            <button class="btn btn-sm btn-outline-secondary">Classer</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted small">Lecture seule</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,54 @@
+@model AkarangaBank.Web.ViewModels.JournalVM
+@{ ViewData["Title"] = "Journal"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📒 Journal des opérations</h2>
+    @if (User.IsInRole("admin") || User.IsInRole("auditeur"))
+    {
+        <a asp-action="Equilibre" class="btn btn-outline-secondary">Contrôle d'équilibre</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-2">
+        <input type="date" name="du" value="@Model.Du?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="au" value="@Model.Au?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <select name="type" class="form-select">
+            <option value="">-- Type --</option>
+            <option value="Depot" selected="@(Model.Type == "Depot")">Dépôt</option>
+            <option value="Retrait" selected="@(Model.Type == "Retrait")">Retrait</option>
+            <option value="Virement" selected="@(Model.Type == "Virement")">Virement</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+<p class="text-muted">@Model.Total opération(s).</p>
+
+<table class="table table-sm table-hover bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>Date</th><th>Référence</th><th>Type</th><th>Compte</th>
+            <th class="text-end">Montant</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var o in Model.Operations)
+    {
+        <tr>
+            <td>@o.DateOperation.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@o.Reference</td>
+            <td>@o.TypeOperation</td>
+            <td>@o.Compte.NumeroCompte</td>
+            <td class="text-end">@o.Montant.ToString("N0") @o.Devise</td>
+            <td><a asp-action="Releve" asp-route-id="@o.CompteId" class="btn btn-sm btn-outline-primary">Relevé</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

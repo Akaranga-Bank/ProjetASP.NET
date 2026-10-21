@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Tableau de bord";
+    var user = (AkarangaBank.Web.Models.ApplicationUser)ViewBag.User;
+    var role = (string)ViewBag.Role;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0">Bonjour, @user.NomComplet 👋</h2>
+        <p class="text-muted mb-0">Rôle : <span class="badge bg-primary">@role</span></p>
+    </div>
+</div>
+
+@* =================== CARTES STATS =================== *@
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">Agences</h6>
+                <h3 class="text-primary">@ViewBag.NbAgences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">Clients</h6>
+                <h3 class="text-primary">@ViewBag.NbClients</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">Comptes</h6>
+                <h3 class="text-primary">@ViewBag.NbComptes</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">Solde global</h6>
+                <h3 class="text-success">@(((decimal)ViewBag.SoldeTotal).ToString("N0")) BIF</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* =================== ACTIONS PAR RÔLE =================== *@
+<div class="row g-3 mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5>Actions rapides</h5>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+
+                    @if (role == "admin")
+                    {
+                        <a asp-controller="Agences" asp-action="Index" class="btn btn-outline-primary">🏢 Agences</a>
+                        <a asp-controller="Clients" asp-action="Index" class="btn btn-outline-primary">👥 Clients</a>
+                        <a asp-controller="Comptes" asp-action="Index" class="btn btn-outline-primary">💳 Comptes</a>
+                        <a asp-controller="Operations" asp-action="Journal" class="btn btn-outline-primary">📒 Journal</a>
+                        <a asp-controller="Audit" asp-action="Index" class="btn btn-outline-secondary">🕵️ Audit</a>
+                    }
+                    else if (role == "gestionnaire")
+                    {
+                        <a asp-controller="Clients" asp-action="Index" class="btn btn-outline-primary">👥 Clients</a>
+                        <a asp-controller="Comptes" asp-action="Index" class="btn btn-outline-primary">💳 Comptes</a>
+                        <a asp-controller="Operations" asp-action="Journal" class="btn btn-outline-primary">📒 Journal</a>
+                        <a asp-controller="Conformite" asp-action="Alertes" class="btn btn-outline-danger">🚨 Alertes AML</a>
+                    }
+                    else if (role == "guichetier")
+                    {
+                        <a asp-controller="Operations" asp-action="Depot" class="btn btn-outline-success">💰 Dépôt</a>
+                        <a asp-controller="Operations" asp-action="Retrait" class="btn btn-outline-warning">💸 Retrait</a>
+                        <a asp-controller="Operations" asp-action="Virement" class="btn btn-outline-primary">🔁 Virement</a>
+                        <a asp-controller="Operations" asp-action="Journal" class="btn btn-outline-secondary">📒 Journal</a>
+                    }
+                    else if (role == "auditeur")
+                    {
+                        <a asp-controller="Audit" asp-action="Index" class="btn btn-outline-secondary">🕵️ Journal d'audit</a>
+                        <a asp-controller="Conformite" asp-action="Alertes" class="btn btn-outline-danger">🚨 Alertes AML</a>
+                        <a asp-controller="Operations" asp-action="Journal" class="btn btn-outline-primary">📒 Journal</a>
+                    }
+                    else if (role == "client")
+                    {
+                        <a asp-controller="MesComptes" asp-action="Index" class="btn btn-outline-primary">💳 Mes comptes</a>
+                        <a asp-controller="MesComptes" asp-action="Virement" class="btn btn-outline-success">🔁 Faire un virement</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* =================== ALERTES + OPERATIONS =================== *@
+<div class="row g-3">
+    @if (ViewBag.Alertes != null)
+    {
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <strong>🚨 Dernières alertes AML</strong>
+                </div>
+                <div class="card-body p-0">
+                    @if (((List<AkarangaBank.Web.Models.AlerteAML>)ViewBag.Alertes).Count == 0)
+                    {
+                        <p class="text-muted p-3 mb-0">Aucune alerte.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                @foreach (var a in (List<AkarangaBank.Web.Models.AlerteAML>)ViewBag.Alertes)
+                                {
+                                    <tr>
+                                        <td>@a.DateAlerte.ToString("dd/MM HH:mm")</td>
+                                        <td>@a.Client.Nom @a.Client.Prenom</td>
+                                        <td><span class="badge bg-warning text-dark">@a.Niveau</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <strong>📒 Dernières opérations</strong>
+            </div>
+            <div class="card-body p-0">
+                @if (((List<AkarangaBank.Web.Models.Operation>)ViewBag.Operations).Count == 0)
+                {
+                    <p class="text-muted p-3 mb-0">Aucune opération.</p>
+                }
+                else
+                {
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            @foreach (var o in (List<AkarangaBank.Web.Models.Operation>)ViewBag.Operations)
+                            {
+                                <tr>
+                                    <td>@o.DateOperation.ToString("dd/MM HH:mm")</td>
+                                    <td>@o.TypeOperation</td>
+                                    <td>@o.Compte.NumeroCompte</td>
+                                    <td class="text-end">@o.Montant.ToString("N0") BIF</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

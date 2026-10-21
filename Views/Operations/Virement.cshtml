@@ -1,0 +1,43 @@
+@model AkarangaBank.Web.ViewModels.VirementVM
+@{
+    ViewData["Title"] = "Virement";
+    var sources = ViewBag.MesComptes ?? ViewBag.Comptes;
+}
+
+<h2>🔁 Nouveau virement</h2>
+
+<form asp-action="Virement" method="post" class="bg-white p-4 rounded shadow-sm" style="max-width:600px;">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="CompteSourceId" class="form-label"></label>
+        <select asp-for="CompteSourceId" asp-items="sources" class="form-select">
+            <option value="">-- Compte source --</option>
+        </select>
+        <span asp-validation-for="CompteSourceId" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CompteDestinationId" class="form-label"></label>
+        <select asp-for="CompteDestinationId" asp-items="ViewBag.ComptesDest" class="form-select">
+            <option value="">-- Compte destination --</option>
+        </select>
+        <span asp-validation-for="CompteDestinationId" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Montant" class="form-label">Montant (BIF)</label>
+        <input asp-for="Montant" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="Montant" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Motif" class="form-label"></label>
+        <input asp-for="Motif" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer le virement</button>
+    <a asp-action="Journal" asp-controller="Operations" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

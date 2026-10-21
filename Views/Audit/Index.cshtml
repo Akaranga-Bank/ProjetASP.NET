@@ -1,0 +1,47 @@
+@model IEnumerable<AkarangaBank.Web.Models.AuditLog>
+@{ ViewData["Title"] = "Journal d'audit"; }
+
+<h2>🕵️ Piste d'audit</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="actionFilter" value="@ViewBag.ActionFilter" class="form-control" placeholder="Action (Depot, Virement...)" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="table" value="@ViewBag.Table" class="form-control" placeholder="Table (Operations...)" />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Aucune entrée d'audit.</p>
+}
+else
+{
+    <table class="table table-sm bg-white">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th>
+                <th>Action</th>
+                <th>Table</th>
+                <th>Enregistrement</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.DateEvenement.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                <td><span class="badge bg-primary">@a.Action</span></td>
+                <td>@a.TableConcerne</td>
+                <td>@a.EnregistrementId</td>
+                <td class="text-muted small">@a.Details</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

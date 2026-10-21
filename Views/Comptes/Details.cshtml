@@ -1,0 +1,49 @@
+@model AkarangaBank.Web.ViewModels.CompteDetailsVM
+@{ ViewData["Title"] = "Détails compte"; }
+
+<h2>💳 Compte @Model.Compte.NumeroCompte</h2>
+
+<div class="bg-white p-3 rounded shadow-sm mb-3">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Client</dt>
+        <dd class="col-sm-9">@Model.Compte.Client.Nom @Model.Compte.Client.Prenom</dd>
+        <dt class="col-sm-3">Type</dt>
+        <dd class="col-sm-9">@Model.Compte.TypeCompte.Libelle</dd>
+        <dt class="col-sm-3">Agence</dt>
+        <dd class="col-sm-9">@Model.Compte.Agence.Code - @Model.Compte.Agence.Ville</dd>
+        <dt class="col-sm-3">Solde</dt>
+        <dd class="col-sm-9"><strong>@Model.Compte.Solde.ToString("N2") @Model.Compte.Devise</strong></dd>
+        <dt class="col-sm-3">Statut</dt>
+        <dd class="col-sm-9">@Model.Compte.Statut</dd>
+        <dt class="col-sm-3">Ouvert le</dt>
+        <dd class="col-sm-9">@Model.Compte.DateOuverture.ToString("dd/MM/yyyy")</dd>
+    </dl>
+</div>
+
+<h5>Dernières écritures</h5>
+@if (!Model.Ecritures.Any())
+{
+    <p class="text-muted">Aucune écriture.</p>
+}
+else
+{
+    <table class="table table-sm bg-white">
+        <thead class="table-light">
+            <tr><th>Date</th><th>Opération</th><th>Sens</th><th class="text-end">Montant</th><th>Libellé</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var e in Model.Ecritures)
+        {
+            <tr>
+                <td>@e.DateEcriture.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@e.Operation.Reference</td>
+                <td><span class="badge @(e.Sens == "Debit" ? "bg-danger" : "bg-success")">@e.Sens</span></td>
+                <td class="text-end">@e.Montant.ToString("N2")</td>
+                <td>@e.Libelle</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<a asp-action="Index" class="btn btn-secondary">← Retour</a>

@@ -1,0 +1,35 @@
+@{ ViewData["Title"] = "Nouvel utilisateur"; }
+
+<h2>Nouvel utilisateur</h2>
+
+<form asp-action="Create" method="post" class="bg-white p-4 rounded shadow-sm" style="max-width:600px;">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Nom complet</label>
+        <input name="nomComplet" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input name="email" type="email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mot de passe</label>
+        <input name="password" type="password" class="form-control" required minlength="6" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rôle</label>
+        <select name="role" asp-items="ViewBag.Roles" class="form-select"></select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Agence</label>
+        <select name="agenceId" asp-items="ViewBag.Agences" class="form-select"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Créer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

@@ -1,0 +1,51 @@
+@model AkarangaBank.Web.ViewModels.CompteFormVM
+@{ ViewData["Title"] = "Ouvrir un compte"; }
+
+<h2>Ouvrir un compte</h2>
+
+<form asp-action="Create" method="post" class="bg-white p-4 rounded shadow-sm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="NumeroCompte" class="form-label"></label>
+            <input asp-for="NumeroCompte" class="form-control" placeholder="BJM-0001-0001" />
+            <span asp-validation-for="NumeroCompte" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="ClientId" class="form-label"></label>
+            <select asp-for="ClientId" asp-items="ViewBag.Clients" class="form-select">
+                <option value="">-- Sélectionner un client --</option>
+            </select>
+            <span asp-validation-for="ClientId" class="text-danger small"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="TypeCompteId" class="form-label"></label>
+            <select asp-for="TypeCompteId" asp-items="ViewBag.Types" class="form-select">
+                <option value="">-- Type --</option>
+            </select>
+            <span asp-validation-for="TypeCompteId" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="AgenceId" class="form-label"></label>
+            <select asp-for="AgenceId" asp-items="ViewBag.Agences" class="form-select">
+                <option value="">-- Agence --</option>
+            </select>
+            <span asp-validation-for="AgenceId" class="text-danger small"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SoldeInitial" class="form-label"></label>
+        <input asp-for="SoldeInitial" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="SoldeInitial" class="text-danger small"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ouvrir le compte</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

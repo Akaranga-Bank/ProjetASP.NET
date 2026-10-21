@@ -1,0 +1,35 @@
+@model AkarangaBank.Web.ViewModels.AgenceFormVM
+@{ ViewData["Title"] = "Modifier agence"; }
+
+<h2>Modifier l'agence</h2>
+
+<form asp-action="Edit" method="post" class="bg-white p-4 rounded shadow-sm" style="max-width:600px;">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Nom" class="form-label"></label>
+        <input asp-for="Nom" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Ville" class="form-label"></label>
+        <input asp-for="Ville" class="form-control" />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="EstSiege" class="form-check-input" />
+        <label asp-for="EstSiege" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Modifier</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,51 @@
+@model AkarangaBank.Web.ViewModels.AgenceListVM
+@{ ViewData["Title"] = "Agences"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🏢 Agences</h2>
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-action="Create" class="btn btn-success">+ Nouvelle agence</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="recherche" value="@Model.Recherche" class="form-control" placeholder="Rechercher..." />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+</form>
+
+<p class="text-muted">@Model.Total agence(s).</p>
+
+<table class="table table-hover bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>Code</th><th>Nom</th><th>Ville</th><th>Statut</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model.Agences)
+    {
+        <tr>
+            <td><strong>@a.Code</strong></td>
+            <td>@a.Nom</td>
+            <td>@a.Ville</td>
+            <td>
+                @if (a.EstSiege) { <span class="badge bg-primary">Siège</span> }
+                else { <span class="badge bg-secondary">Agence</span> }
+            </td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-outline-primary">Détails</a>
+                @if (User.IsInRole("admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-warning">Modifier</a>
+                    <a asp-action="Delete" asp-route-id="@a.Id" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

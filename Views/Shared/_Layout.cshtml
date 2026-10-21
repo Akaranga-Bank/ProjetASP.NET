@@ -1,0 +1,264 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Localization
+@using AkarangaBank.Web.Models
+@using AkarangaBank.Web.Resources
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IStringLocalizer<SharedResource> Localizer
+@{
+    var currentUser = SignInManager.IsSignedIn(User) ? await UserManager.GetUserAsync(User) : null;
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var currentPath = Context.Request.Path.ToString();
+}
+<!DOCTYPE html>
+<html lang="@currentCulture">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Akaranga Bank</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        :root {
+            --akr-blue: #1F3864;
+            --akr-blue-dark: #16294a;
+            --akr-blue-light: #2a4a7c;
+            --akr-gold: #C9A227;
+            --sidebar-w: 260px;
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; }
+        body { background: #f5f6fa; font-family: 'Segoe UI', system-ui, sans-serif; display: flex; }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--akr-blue) 0%, var(--akr-blue-dark) 100%);
+            color: white;
+            position: fixed; top: 0; left: 0;
+            display: flex; flex-direction: column;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+        .sidebar-brand {
+            display: flex; align-items: center; gap: 0.75rem;
+            color: white; text-decoration: none;
+            padding: 0 0.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-brand-logo {
+            width: 40px; height: 40px; background: white; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; color: var(--akr-blue); font-size: 1.3rem;
+        }
+        .sidebar-brand-text { display: flex; flex-direction: column; }
+        .sidebar-brand-text .name { font-weight: 700; font-size: 1.15rem; letter-spacing: 0.3px; }
+        .sidebar-brand-text .name .gold { color: var(--akr-gold); }
+        .sidebar-brand-text .sub { font-size: 0.72rem; color: rgba(255,255,255,0.55); letter-spacing: 0.5px; text-transform: uppercase; }
+
+        .sidebar-nav { flex-grow: 1; list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav .nav-item { margin-bottom: 0.35rem; }
+        .sidebar-nav .nav-link {
+            color: rgba(255,255,255,0.75) !important;
+            padding: 0.7rem 1rem; border-radius: 8px;
+            display: flex; align-items: center; gap: 0.75rem;
+            font-weight: 500; font-size: 0.95rem;
+            text-decoration: none; transition: all 0.15s ease;
+        }
+        .sidebar-nav .nav-link:hover { background: rgba(255,255,255,0.08); color: white !important; }
+        .sidebar-nav .nav-link .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+
+        .lang-selector {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 0.75rem 0;
+            margin-top: 0.5rem;
+        }
+        .lang-selector .label {
+            font-size: 0.72rem; color: rgba(255,255,255,0.5);
+            text-transform: uppercase; margin-bottom: 0.5rem;
+            padding: 0 0.5rem;
+        }
+        .lang-selector .buttons { display: flex; gap: 0.35rem; padding: 0 0.5rem; }
+        .lang-btn {
+            flex: 1;
+            border: none; color: white;
+            padding: 0.4rem 0.3rem;
+            border-radius: 6px; font-size: 0.75rem;
+            cursor: pointer; transition: all 0.15s;
+            background: rgba(255,255,255,0.08);
+        }
+        .lang-btn:hover { background: rgba(255,255,255,0.15); }
+        .lang-btn.active { background: var(--akr-gold); color: var(--akr-blue); font-weight: 700; }
+
+        .sidebar-footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 0.5rem; }
+        .user-card {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem; background: rgba(255,255,255,0.05);
+            border-radius: 8px; margin-bottom: 0.75rem;
+        }
+        .user-card-avatar {
+            width: 38px; height: 38px; background: var(--akr-gold);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--akr-blue); font-size: 1rem; flex-shrink: 0;
+        }
+        .user-card-info { overflow: hidden; flex-grow: 1; }
+        .user-card-name { font-size: 0.85rem; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-card-role { font-size: 0.7rem; color: var(--akr-gold); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+        .logout-btn {
+            width: 100%; background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.75);
+            padding: 0.55rem; border-radius: 8px;
+            font-size: 0.85rem; transition: all 0.15s ease;
+        }
+        .logout-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.4); }
+
+        .main-wrapper { margin-left: var(--sidebar-w); flex-grow: 1; min-height: 100vh; display: flex; flex-direction: column; }
+        .main-content { flex-grow: 1; padding: 2rem; }
+        .main-footer {
+            padding: 1rem 2rem; background: white;
+            border-top: 1px solid #e9ecef; color: #6c757d; font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+
+<aside class="sidebar">
+    <a class="sidebar-brand" asp-controller="Home" asp-action="Index">
+        <div class="sidebar-brand-logo">A</div>
+        <div class="sidebar-brand-text">
+            <span class="name">Akaranga<span class="gold">Bank</span></span>
+            <span class="sub">@Localizer["BankManagement"]</span>
+        </div>
+    </a>
+
+    <ul class="sidebar-nav">
+        @if (currentUser != null)
+        {
+            var role = currentUser.Role;
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                    <span class="icon">🏠</span> @Localizer["Dashboard"]
+                </a>
+            </li>
+
+            @if (role == "admin")
+            {
+                <li class="nav-item"><a class="nav-link" asp-controller="Agences" asp-action="Index"><span class="icon">🏢</span> @Localizer["Agences"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Clients" asp-action="Index"><span class="icon">👥</span> @Localizer["Clients"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Comptes" asp-action="Index"><span class="icon">💳</span> @Localizer["Comptes"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Journal"><span class="icon">📒</span> @Localizer["Operations"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Conformite" asp-action="Alertes"><span class="icon">🚨</span> @Localizer["AML"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Audit" asp-action="Index"><span class="icon">🕵️</span> @Localizer["Audit"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="AdminUtilisateurs" asp-action="Index"><span class="icon">👤</span> @Localizer["Utilisateurs"]</a></li>
+            }
+            else if (role == "gestionnaire")
+            {
+                <li class="nav-item"><a class="nav-link" asp-controller="Clients" asp-action="Index"><span class="icon">👥</span> @Localizer["Clients"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Comptes" asp-action="Index"><span class="icon">💳</span> @Localizer["Comptes"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Journal"><span class="icon">📒</span> @Localizer["Operations"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Conformite" asp-action="Alertes"><span class="icon">🚨</span> @Localizer["AML"]</a></li>
+            }
+            else if (role == "guichetier")
+            {
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Depot"><span class="icon">💰</span> @Localizer["Depot"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Retrait"><span class="icon">💸</span> @Localizer["Retrait"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Virement"><span class="icon">🔁</span> @Localizer["Virement"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Journal"><span class="icon">📒</span> @Localizer["Journal"]</a></li>
+            }
+            else if (role == "auditeur")
+            {
+                <li class="nav-item"><a class="nav-link" asp-controller="Audit" asp-action="Index"><span class="icon">🕵️</span> @Localizer["Audit"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Conformite" asp-action="Alertes"><span class="icon">🚨</span> @Localizer["AML"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Operations" asp-action="Journal"><span class="icon">📒</span> @Localizer["Operations"]</a></li>
+            }
+            else if (role == "client")
+            {
+                <li class="nav-item"><a class="nav-link" asp-controller="MesComptes" asp-action="Index"><span class="icon">💳</span> @Localizer["MesComptes"]</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="MesComptes" asp-action="Virement"><span class="icon">🔁</span> @Localizer["Virement"]</a></li>
+            }
+        }
+    </ul>
+
+    @* ------- Bloc langue : isolé, hors de tout autre form ------- *@
+    <div class="lang-selector">
+        <div class="label">🌐 @Localizer["Language"]</div>
+        <div class="buttons">
+            <form method="post" asp-controller="Culture" asp-action="Set">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="culture" value="fr-BI" />
+                <input type="hidden" name="returnUrl" value="@currentPath" />
+                <button type="submit" class="lang-btn @(currentCulture.StartsWith("fr") ? "active" : "")">🇫🇷 FR</button>
+            </form>
+            <form method="post" asp-controller="Culture" asp-action="Set">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="culture" value="en-US" />
+                <input type="hidden" name="returnUrl" value="@currentPath" />
+                <button type="submit" class="lang-btn @(currentCulture.StartsWith("en") ? "active" : "")">🇬🇧 EN</button>
+            </form>
+            <form method="post" asp-controller="Culture" asp-action="Set">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="culture" value="rn-BI" />
+                <input type="hidden" name="returnUrl" value="@currentPath" />
+                <button type="submit" class="lang-btn @(currentCulture.StartsWith("rn") ? "active" : "")">🇧🇮 RN</button>
+            </form>
+        </div>
+    </div>
+
+    @if (currentUser != null)
+    {
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-card-avatar">
+                    @(currentUser.NomComplet?.FirstOrDefault() ?? '?')
+                </div>
+                <div class="user-card-info">
+                    <div class="user-card-name">@currentUser.NomComplet</div>
+                    <div class="user-card-role">@currentUser.Role</div>
+                </div>
+            </div>
+            <form method="post" asp-controller="Account" asp-action="Logout">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="logout-btn">← @Localizer["Logout"]</button>
+            </form>
+        </div>
+    }
+</aside>
+
+
+
+<div class="main-wrapper">
+    <main class="main-content">
+
+        @if (TempData["Success"] is string successMsg)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                @successMsg
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] is string errorMsg)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @errorMsg
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="main-footer">
+        &copy; @DateTime.Now.Year Akaranga Bank — Bujumbura, Burundi
+    </footer>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

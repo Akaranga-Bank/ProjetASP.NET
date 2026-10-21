@@ -1,0 +1,32 @@
+@model AkarangaBank.Web.ViewModels.ReleveVM
+@{ ViewData["Title"] = "Relevé"; }
+
+<h2>📄 Relevé @Model.Compte.NumeroCompte</h2>
+
+<div class="bg-white p-3 rounded shadow-sm mb-3">
+    <strong>Solde initial :</strong> @Model.SoldeInitial.ToString("N0") @Model.Compte.Devise<br />
+    <strong>Solde final :</strong> @Model.SoldeFinal.ToString("N0") @Model.Compte.Devise
+</div>
+
+<table class="table table-sm bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>Date</th><th>Opération</th><th>Libellé</th>
+            <th class="text-end">Débit</th><th class="text-end">Crédit</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var e in Model.Ecritures)
+    {
+        <tr>
+            <td>@e.DateEcriture.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@e.Operation.Reference</td>
+            <td>@e.Libelle</td>
+            <td class="text-end text-danger">@(e.Sens == "Debit" ? e.Montant.ToString("N0") : "")</td>
+            <td class="text-end text-success">@(e.Sens == "Credit" ? e.Montant.ToString("N0") : "")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Journal" class="btn btn-secondary">← Retour</a>

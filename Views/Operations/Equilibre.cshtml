@@ -1,0 +1,19 @@
+@{ ViewData["Title"] = "Contrôle d'équilibre"; var ok = (bool)ViewBag.Equilibre; }
+
+<h2>⚖️ Contrôle d'équilibre comptable</h2>
+
+@if (ok)
+{
+    <div class="alert alert-success">
+        <h4>✅ La comptabilité est équilibrée.</h4>
+        <p class="mb-0">Pour chaque opération : total débit = total crédit.</p>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        <h4>❌ Déséquilibre détecté !</h4>
+    </div>
+}
+
+<a asp-action="Journal" class="btn btn-secondary">← Retour au journal</a>

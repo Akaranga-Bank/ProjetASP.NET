@@ -1,0 +1,34 @@
+@model IEnumerable<AkarangaBank.Web.Models.ApplicationUser>
+@{ ViewData["Title"] = "Utilisateurs"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>👤 Utilisateurs</h2>
+    <a asp-action="Create" class="btn btn-success">+ Nouvel utilisateur</a>
+</div>
+
+<table class="table table-hover bg-white">
+    <thead class="table-light">
+        <tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Agence</th><th>Actif</th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.NomComplet</td>
+            <td>@u.Email</td>
+            <td><span class="badge bg-primary">@u.Role</span></td>
+            <td>@u.Agence?.Code</td>
+            <td>@(u.EstActif ? "✅" : "❌")</td>
+            <td>
+                <form asp-action="ToggleActif" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@u.Id" />
+                    <button class="btn btn-sm btn-outline-warning">
+                        @(u.EstActif ? "Désactiver" : "Activer")
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

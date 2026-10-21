@@ -1,0 +1,11 @@
+@model AkarangaBank.Web.Models.Agence
+@{ ViewData["Title"] = "Détails agence"; }
+
+<h2>🏢 @Model.Nom</h2>
+<dl class="row bg-white p-3 rounded shadow-sm">
+    <dt class="col-sm-3">Code</dt><dd class="col-sm-9">@Model.Code</dd>
+    <dt class="col-sm-3">Ville</dt><dd class="col-sm-9">@Model.Ville</dd>
+    <dt class="col-sm-3">Siège</dt><dd class="col-sm-9">@(Model.EstSiege ? "Oui" : "Non")</dd>
+    <dt class="col-sm-3">Créée le</dt><dd class="col-sm-9">@Model.DateCreation.ToString("dd/MM/yyyy HH:mm")</dd>
+</dl>
+<a asp-action="Index" class="btn btn-secondary">← Retour</a>
