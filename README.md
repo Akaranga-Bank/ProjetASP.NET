@@ -1,3 +1,9 @@
+Les membres du groupe
+
+1. BIZIMANA Samo Didier
+2. ABIMANA Mediateur
+
+
 # 🏦 Akaranga Bank
 
 Application de gestion bancaire développée dans le cadre du cours **Développement Web avec ASP.NET Core** (BAC+3 Génie Logiciel — Université Polytechnique de Gitega).
